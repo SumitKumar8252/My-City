@@ -1,3 +1,4 @@
+// Home.jsx
 import React from "react";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
@@ -9,11 +10,12 @@ import Footer from "../components/Footer";
 const Home = () => {
   return (
     <div className="min-h-screen flex flex-col overflow-hidden">
-      {/* Navbar with fade-down */}
+      {/* Navbar - Sticky at the top with fade-in */}
       <motion.div
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.1, ease: "easeOut" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="sticky top-0 z-50 bg-white shadow-md w-full"
       >
         <Navbar />
       </motion.div>
@@ -23,7 +25,7 @@ const Home = () => {
         initial={{ y: 50, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.1, ease: "easeOut" }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
         className="w-full"
       >
         <HeroSection />

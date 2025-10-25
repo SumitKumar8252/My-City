@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { AiOutlineCamera, AiOutlineClose, AiOutlineSwap, AiOutlineVideoCamera } from "react-icons/ai";
 import { motion } from "framer-motion";
 
-const UploadImage = ({ data, handleImageChange, maxImages = 5 }) => {
+const UploadImage = ({ data, handleImageChange, maxImages = 5, onStopCamera }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [stream, setStream] = useState(null);
@@ -36,13 +36,16 @@ const UploadImage = ({ data, handleImageChange, maxImages = 5 }) => {
 
     startCamera();
 
+    // Cleanup on unmount or when camera should stop
     return () => {
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
         setStream(null);
       }
+      // Notify parent that camera is stopped (optional feedback)
+      if (onStopCamera) onStopCamera();
     };
-  }, [cameraOn, facingMode]);
+  }, [cameraOn, facingMode, onStopCamera]);
 
   const capturePhoto = () => {
     if (data.images.length >= maxImages) {

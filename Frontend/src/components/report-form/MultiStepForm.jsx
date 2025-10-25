@@ -1,5 +1,5 @@
 // MultiStepForm.js
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CitizenDetails from "./CitizenDetails";
 import IssueDetails from "./IssueDetails";
@@ -24,6 +24,9 @@ const MultiStepForm = () => {
     images: [],
   });
 
+  // Ref to store the stopCamera callback from UploadImage
+  const stopCameraRef = useRef(() => {});
+
   // Memoized handlers
   const handleChange = useCallback((e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -47,7 +50,15 @@ const MultiStepForm = () => {
   }, [step, formData]);
 
   const prevStep = useCallback(() => {
+    // Call stopCamera before moving to previous step
+    if (step === 3) {
+      stopCameraRef.current();
+    }
     setStep((prev) => Math.max(prev - 1, 1));
+  }, [step]);
+
+  const handleStopCamera = useCallback((stopFn) => {
+    stopCameraRef.current = stopFn;
   }, []);
 
   const handleSubmit = useCallback(async (e) => {
@@ -80,7 +91,9 @@ const MultiStepForm = () => {
       setFormData((prev) => ({ ...prev, images: uploadedImageUrls }));
     }
 
-    // Log the final form data with Cloudinary URLs
+    // Call stopCamera before submission (optional, if still active)
+    stopCameraRef.current();
+
     console.log("Form Submitted:", formData);
     alert(JSON.stringify(formData, null, 2));
   }, [formData]);
@@ -136,7 +149,13 @@ const MultiStepForm = () => {
           >
             {step === 1 && <CitizenDetails data={formData} handleChange={handleChange} />}
             {step === 2 && <IssueDetails data={formData} handleChange={handleChange} />}
-            {step === 3 && <UploadImage data={formData} handleImageChange={handleImageChange} />}
+            {step === 3 && (
+              <UploadImage
+                data={formData}
+                handleImageChange={handleImageChange}
+                onStopCamera={handleStopCamera}
+              />
+            )}
           </motion.div>
         </AnimatePresence>
 

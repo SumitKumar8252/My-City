@@ -1,4 +1,3 @@
-// CitizenDetails.js
 import React from "react";
 import {
   AiOutlineUser,
