@@ -9,20 +9,21 @@ import axios from "axios";
 const MultiStepForm = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    street: "",
-    landmark: "",
-    city: "",
-    state: "",
-    country: "",
-    pin: "",
-    issueType: "",
-    issueTitle: "",
-    issueDescription: "",
-    images: [],
-  });
+  name: "",
+  email: "",
+  phone: "",
+  street: "",
+  landmark: "",
+  city: "",
+  state: "",
+  pin: "",
+  issueType: "",
+  issueTitle: "",
+  issueDescription: "",
+  images: [],
+  lat: "",
+  lon: "",
+});
 
   // Ref to store the stopCamera callback from UploadImage
   const stopCameraRef = useRef(() => {});
@@ -61,42 +62,45 @@ const MultiStepForm = () => {
     stopCameraRef.current = stopFn;
   }, []);
 
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-    // Upload images to Cloudinary if any
-    const uploadedImageUrls = [];
-    if (formData.images.length > 0) {
-      const uploadPromises = formData.images.map(async (image) => {
-        const data = new FormData();
-        data.append("file", image);
-        data.append("upload_preset", "your_upload_preset"); // Replace with your upload preset
+      // Upload images to Cloudinary if any
+      const uploadedImageUrls = [];
+      if (formData.images.length > 0) {
+        const uploadPromises = formData.images.map(async (image) => {
+          const data = new FormData();
+          data.append("file", image);
+          data.append("upload_preset", "your_upload_preset"); // Replace with your upload preset
 
-        try {
-          const response = await axios.post(
-            `https://api.cloudinary.com/v1_1/your_cloud_name/image/upload`, // Replace with your cloud name
-            data
-          );
-          uploadedImageUrls.push(response.data.secure_url);
-        } catch (error) {
-          console.error("Error uploading image to Cloudinary:", error);
-          alert("Failed to upload one or more images.");
-          return;
-        }
-      });
+          try {
+            const response = await axios.post(
+              `https://api.cloudinary.com/v1_1/your_cloud_name/image/upload`, // Replace with your cloud name
+              data
+            );
+            uploadedImageUrls.push(response.data.secure_url);
+          } catch (error) {
+            console.error("Error uploading image to Cloudinary:", error);
+            alert("Failed to upload one or more images.");
+            return;
+          }
+        });
 
-      await Promise.all(uploadPromises);
+        await Promise.all(uploadPromises);
 
-      // Update formData with Cloudinary URLs
-      setFormData((prev) => ({ ...prev, images: uploadedImageUrls }));
-    }
+        // Update formData with Cloudinary URLs
+        setFormData((prev) => ({ ...prev, images: uploadedImageUrls }));
+      }
 
-    // Call stopCamera before submission (optional, if still active)
-    stopCameraRef.current();
+      // Call stopCamera before submission (optional, if still active)
+      stopCameraRef.current();
 
-    console.log("Form Submitted:", formData);
-    alert(JSON.stringify(formData, null, 2));
-  }, [formData]);
+      console.log("Form Submitted:", formData);
+      alert(JSON.stringify(formData, null, 2));
+    },
+    [formData]
+  );
 
   // Step titles
   const stepTitles = ["Citizen Details", "Issue Details", "Upload Images"];
@@ -147,8 +151,12 @@ const MultiStepForm = () => {
             animate="visible"
             exit="exit"
           >
-            {step === 1 && <CitizenDetails data={formData} handleChange={handleChange} />}
-            {step === 2 && <IssueDetails data={formData} handleChange={handleChange} />}
+            {step === 1 && (
+              <CitizenDetails data={formData} handleChange={handleChange} />
+            )}
+            {step === 2 && (
+              <IssueDetails data={formData} handleChange={handleChange} />
+            )}
             {step === 3 && (
               <UploadImage
                 data={formData}
