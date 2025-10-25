@@ -1,18 +1,19 @@
-// context/ThemeContext.js
-import React, { createContext, useState, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [darkMode, setDarkMode] = useState(false);
+  const [theme, setTheme] = useState("light");
 
-  const toggleTheme = () => setDarkMode((prev) => !prev);
+  const toggleTheme = () => setTheme((prev) => (prev === "light" ? "dark" : "light"));
 
   return (
-    <ThemeContext.Provider value={{ darkMode, toggleTheme }}>
-      {children}
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      <div className={`min-h-screen transition-colors duration-500 ${theme === "light" ? "bg-white text-gray-900" : "bg-gray-900 text-white"}`}>
+        {children}
+      </div>
     </ThemeContext.Provider>
   );
 };
 
-export default ThemeContext;
+export const useTheme = () => useContext(ThemeContext);

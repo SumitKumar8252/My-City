@@ -1,16 +1,24 @@
-
-import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "./page/Home";
-import Report from "./page/Report";
+
+// import Auth from "./pages/Auth";
+import Navbar from "./Components/Navbar";
+import AdminPage from "./pages/Admin";
+
+
+
 
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/report" element={<Report />} />
-    </Routes>
+    <>
+      <Navbar />
+     
+      <Routes>
+        <Route path="/" element={<AdminPage />} />
+        
+        
+      </Routes>
+    </>
   );
 };
 
