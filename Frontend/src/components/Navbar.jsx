@@ -50,7 +50,7 @@ const Navbar = () => {
     { name: "Home", path: "/" },
     { name: "Report Issue", path: "/report" },
     { name: "Track Status", path: "/track" },
-    { name: "Sign-up", path: "/signup" },
+    { name: "Sign-In", path: "/sign-in" },
   ];
 
   const [menuOpen, setMenuOpen] = useState(false);
