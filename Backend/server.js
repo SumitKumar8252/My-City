@@ -1,7 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
+const cors = require("cors");
+const bodyParser = require("body-parser");
 const dotenv = require('dotenv');
+const themeRoutes = require("./routes/themeRoutes");
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const weatherRoutes = require('./routes/weatherRoutes');
@@ -11,6 +13,9 @@ const { errorHandler } = require('./middleware/errorMiddleware');
 dotenv.config();
 
 const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+
 
 // Middleware
 app.use(cors({
@@ -18,6 +23,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+app.use("/api/theme", themeRoutes);
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
