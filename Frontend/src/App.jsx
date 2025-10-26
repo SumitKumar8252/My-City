@@ -1,24 +1,22 @@
 import { Routes, Route } from "react-router-dom";
 
-// import Auth from "./pages/Auth";
-import Navbar from "./Components/Navbar";
-import AdminPage from "./pages/Admin";
 
-
-
-
+import Home from "./pages/Home";
+import Auth from "./pages/Auth";
+import AdminPanel from "./Components/AdminPanel";
 
 const App = () => {
   return (
     <>
-      <Navbar />
      
       <Routes>
-        <Route path="/" element={<AdminPage />} />
-        
-        
+        <Route path="/signup" element={<Auth />} />
+        <Route path="/" element={<Home/>} />
+        <Route path="/admin-panel" element={<AdminPanel />} />
       </Routes>
+      
     </>
+   
   );
 };
 

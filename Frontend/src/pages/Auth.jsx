@@ -5,6 +5,7 @@ import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("User");
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
 
@@ -31,7 +32,7 @@ const Auth = () => {
     setLoading(true);
 
     const payload = isLogin
-      ? { email: formData.email, password: formData.password }
+      ? { email: formData.email, password: formData.password, role: selectedRole } // ✅ Role only in Login
       : { fullName: formData.fullName, email: formData.email, password: formData.password };
 
     try {
@@ -68,47 +69,50 @@ const Auth = () => {
           >
             {!isLogin && (
               <div className="relative">
-                <User className="absolute left-3 top-3 text-gray-500 dark:text-gray-300" />
+                <User className="absolute left-3 top-3 text-gray-800 dark:text-gray-900" />
                 <input
                   type="text"
                   name="fullName"
                   placeholder="Full Name"
                   value={formData.fullName}
                   onChange={handleChange}
-                  className="w-full bg-white/50 dark:bg-gray-700 text-gray-900 dark:text-white px-10 py-3 rounded-xl focus:ring-2 focus:ring-blue-400 outline-none placeholder-gray-400 dark:placeholder-gray-300"
+                className="w-full bg-gray-300 text-gray-900 px-10 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-600
+                  
+                  "
                   required
                 />
               </div>
             )}
 
             <div className="relative">
-              <Mail className="absolute left-3 top-3 text-gray-500 dark:text-gray-300" />
+              <Mail className="absolute left-3 top-3 text-gray-900 dark:text-gray-900" />
               <input
                 type="email"
                 name="email"
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full bg-white/50 dark:bg-gray-700 text-gray-900 dark:text-white px-10 py-3 rounded-xl focus:ring-2 focus:ring-blue-400 outline-none placeholder-gray-400 dark:placeholder-gray-300"
+               className="w-full bg-gray-300 text-gray-900 px-10 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-600"
                 required
               />
             </div>
 
             <div className="relative">
-              <Lock className="absolute left-3 top-3 text-gray-500 dark:text-gray-300" />
+              <Lock className="absolute left-3 top-3 text-gray-500 dark:text-gray-900" />
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full bg-white/50 dark:bg-gray-700 text-gray-900 dark:text-white px-10 py-3 rounded-xl focus:ring-2 focus:ring-blue-400 outline-none placeholder-gray-400 dark:placeholder-gray-300"
+                className="w-full bg-gray-300 text-gray-900 px-10 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-600"
                 required
               />
+
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-gray-500 dark:text-gray-300"
+                className="absolute right-3 top-3 text-gray-500 dark:text-gray-900"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -116,16 +120,31 @@ const Auth = () => {
 
             {!isLogin && (
               <div className="relative">
-                <Lock className="absolute left-3 top-3 text-gray-500 dark:text-gray-300" />
+                <Lock className="absolute left-3 top-3 text-gray-500 dark:text-gray-900" />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="Confirm Password"
-                  className="w-full bg-white/50 dark:bg-gray-700 text-gray-900 dark:text-white px-10 py-3 rounded-xl focus:ring-2 focus:ring-blue-400 outline-none placeholder-gray-400 dark:placeholder-gray-300"
+                  className="w-full bg-gray-300 text-gray-900 px-10 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-600"
                   required
                 />
+              </div>
+            )}
+
+            {/* ✅ Role only shown in Login */}
+            {isLogin && (
+              <div className="relative">
+                <select
+                  value={selectedRole}
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                 className="w-full bg-gray-300 text-gray-900 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+
+                >
+                  <option value="User">User</option>
+                  <option value="Admin">Admin</option>
+                </select>
               </div>
             )}
 
@@ -142,7 +161,7 @@ const Auth = () => {
 
         {msg && <p className="text-center mt-4 text-green-600">{msg}</p>}
 
-        <p className="text-center mt-6 text-gray-900 ">
+        <p className="text-center mt-6 text-gray-900">
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
           <button
             onClick={() => setIsLogin(!isLogin)}
