@@ -18,12 +18,24 @@ const DarkLightToggle = () => {
         animate={{ x: darkMode ? 32 : 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
       >
-        {darkMode ? <FaMoon className="text-gray-800 text-xs" /> : <FaSun className="text-yellow-400 text-xs" />}
+        {darkMode ? (
+          <FaMoon className="text-gray-800 text-xs" />
+        ) : (
+          <FaSun className="text-yellow-400 text-xs" />
+        )}
       </motion.div>
 
       <div className="flex justify-between w-full px-2 z-0">
-        <FaSun className={`text-yellow-400 ${darkMode ? "opacity-50" : "opacity-100"} transition-opacity duration-300 text-[10px]`} />
-        <FaMoon className={`text-gray-800 ${darkMode ? "opacity-100" : "opacity-50"} transition-opacity duration-300 text-[10px]`} />
+        <FaSun
+          className={`text-yellow-400 ${
+            darkMode ? "opacity-50" : "opacity-100"
+          } transition-opacity duration-300 text-[10px]`}
+        />
+        <FaMoon
+          className={`text-gray-800 ${
+            darkMode ? "opacity-100" : "opacity-50"
+          } transition-opacity duration-300 text-[10px]`}
+        />
       </div>
     </div>
   );

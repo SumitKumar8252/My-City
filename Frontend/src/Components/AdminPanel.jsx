@@ -1,16 +1,24 @@
 // src/components/AdminPanel.jsx
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { MapPin, Image, ChevronDown, Edit, CheckCircle, AlertCircle, Clock } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import {
+  MapPin,
+  Image,
+  ChevronDown,
+  Edit,
+  CheckCircle,
+  AlertCircle,
+  Clock,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
 // Mock API base URL - replace with your actual backend URL
-const API_BASE_URL = 'http://localhost:5000/api'; // Adjust as needed
+const API_BASE_URL = "http://localhost:5000/api"; // Adjust as needed
 
 // Sample statuses
-const statuses = ['Pending', 'In Progress', 'Resolved'];
+const statuses = ["Pending", "In Progress", "Resolved"];
 
 const AdminPanel = () => {
   const [complaints, setComplaints] = useState([]);
@@ -24,9 +32,9 @@ const AdminPanel = () => {
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
-        const token = localStorage.getItem('adminToken'); // Assuming JWT or similar for auth
+        const token = localStorage.getItem("adminToken"); // Assuming JWT or similar for auth
         if (!token) {
-          navigate('/login');
+          navigate("/login");
           return;
         }
         const response = await axios.get(`${API_BASE_URL}/complaints`, {
@@ -35,7 +43,7 @@ const AdminPanel = () => {
         setComplaints(response.data);
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch complaints. Please try again.');
+        setError("Failed to fetch complaints. Please try again.");
         setLoading(false);
       }
     };
@@ -45,17 +53,23 @@ const AdminPanel = () => {
   // Handle status update
   const updateStatus = async (id, newStatus) => {
     try {
-      const token = localStorage.getItem('adminToken');
-      await axios.put(`${API_BASE_URL}/complaints/${id}`, { status: newStatus }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setComplaints(complaints.map(c => c.id === id ? { ...c, status: newStatus } : c));
+      const token = localStorage.getItem("adminToken");
+      await axios.put(
+        `${API_BASE_URL}/complaints/${id}`,
+        { status: newStatus },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setComplaints(
+        complaints.map((c) => (c.id === id ? { ...c, status: newStatus } : c))
+      );
       if (selectedComplaint?.id === id) {
         setSelectedComplaint({ ...selectedComplaint, status: newStatus });
       }
       // TODO: Trigger push/email notification via backend
     } catch (err) {
-      setError('Failed to update status.');
+      setError("Failed to update status.");
     }
   };
 
@@ -65,7 +79,12 @@ const AdminPanel = () => {
     setMapCenter({ lat: complaint.location.lat, lng: complaint.location.lng });
   };
 
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading...
+      </div>
+    );
   if (error) return <div className="text-red-500 text-center">{error}</div>;
 
   return (
@@ -75,8 +94,10 @@ const AdminPanel = () => {
       transition={{ duration: 0.5 }}
       className="container mx-auto p-4"
     >
-      <h1 className="text-3xl font-bold mb-6">Admin Panel - Civic Issue Dashboard</h1>
-      
+      <h1 className="text-3xl font-bold mb-6">
+        Admin Panel - Civic Issue Dashboard
+      </h1>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Complaints List */}
         <div className="bg-white shadow-md rounded-lg p-4 overflow-y-auto max-h-[80vh]">
@@ -96,7 +117,8 @@ const AdminPanel = () => {
                     <div>
                       <p className="font-medium">{complaint.description}</p>
                       <p className="text-sm text-gray-500">
-                        Status: {complaint.status} {getStatusIcon(complaint.status)}
+                        Status: {complaint.status}{" "}
+                        {getStatusIcon(complaint.status)}
                       </p>
                     </div>
                     <ChevronDown size={20} />
@@ -112,32 +134,51 @@ const AdminPanel = () => {
           {selectedComplaint ? (
             <>
               <h2 className="text-xl font-semibold mb-4">Complaint Details</h2>
-              <p><strong>Description:</strong> {selectedComplaint.description}</p>
-              <p><strong>Location:</strong> Lat: {selectedComplaint.location.lat}, Lng: {selectedComplaint.location.lng}</p>
-              <p><strong>Status:</strong> {selectedComplaint.status}</p>
+              <p>
+                <strong>Description:</strong> {selectedComplaint.description}
+              </p>
+              <p>
+                <strong>Location:</strong> Lat: {selectedComplaint.location.lat}
+                , Lng: {selectedComplaint.location.lng}
+              </p>
+              <p>
+                <strong>Status:</strong> {selectedComplaint.status}
+              </p>
               {selectedComplaint.photo && (
-                <img src={selectedComplaint.photo} alt="Complaint Photo" className="w-full h-48 object-cover my-4" />
+                <img
+                  src={selectedComplaint.photo}
+                  alt="Complaint Photo"
+                  className="w-full h-48 object-cover my-4"
+                />
               )}
-              
+
               {/* Status Update Dropdown */}
               <div className="mt-4">
-                <label className="block text-sm font-medium">Update Status:</label>
+                <label className="block text-sm font-medium">
+                  Update Status:
+                </label>
                 <select
                   value={selectedComplaint.status}
-                  onChange={(e) => updateStatus(selectedComplaint.id, e.target.value)}
+                  onChange={(e) =>
+                    updateStatus(selectedComplaint.id, e.target.value)
+                  }
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                 >
                   {statuses.map((status) => (
-                    <option key={status} value={status}>{status}</option>
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
                   ))}
                 </select>
               </div>
 
               {/* Map View */}
               <div className="mt-6">
-                <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY"> {/* Replace with your API key */}
+                <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY">
+                  {" "}
+                  {/* Replace with your API key */}
                   <GoogleMap
-                    mapContainerStyle={{ height: '300px', width: '100%' }}
+                    mapContainerStyle={{ height: "300px", width: "100%" }}
                     center={mapCenter}
                     zoom={14}
                   >
@@ -147,7 +188,9 @@ const AdminPanel = () => {
               </div>
             </>
           ) : (
-            <p className="text-center text-gray-500">Select a complaint to view details.</p>
+            <p className="text-center text-gray-500">
+              Select a complaint to view details.
+            </p>
           )}
         </div>
       </div>
@@ -158,10 +201,14 @@ const AdminPanel = () => {
 // Helper for status icons
 const getStatusIcon = (status) => {
   switch (status) {
-    case 'Pending': return <Clock className="inline text-yellow-500" size={16} />;
-    case 'In Progress': return <AlertCircle className="inline text-orange-500" size={16} />;
-    case 'Resolved': return <CheckCircle className="inline text-green-500" size={16} />;
-    default: return null;
+    case "Pending":
+      return <Clock className="inline text-yellow-500" size={16} />;
+    case "In Progress":
+      return <AlertCircle className="inline text-orange-500" size={16} />;
+    case "Resolved":
+      return <CheckCircle className="inline text-green-500" size={16} />;
+    default:
+      return null;
   }
 };
 
